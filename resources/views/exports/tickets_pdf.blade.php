@@ -27,7 +27,7 @@
         <tbody>
             @forelse($tickets as $ticket)
             <tr>
-                <td>#FTTH-{{ str_pad($ticket->id, 3, '0', STR_PAD_LEFT) }}</td>
+                <td>Fiber To The Home-{{ str_pad($ticket->id, 3, '0', STR_PAD_LEFT) }}</td>
                 {{-- Gunakan customer->name agar muncul nama orangnya, bukan nomor tiket --}}
                 <td>{{ $ticket->customer->name ?? 'N/A' }}</td> 
                 <td>{{ $ticket->alamat_pelanggan }}</td>

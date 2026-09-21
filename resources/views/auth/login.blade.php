@@ -26,7 +26,7 @@
             </div>
 
             <h1 class="text-white text-6xl font-extrabold leading-[1.1] mb-6">
-                FTTH <span class="text-green-400 italic">Self-</span><br>Reporting
+                Fiber To The Home <span class="text-green-400 italic">Self-</span><br>Reporting
             </h1>
             <div class="w-20 h-1.5 bg-green-400 mb-8"></div>
             <p class="text-blue-100 text-lg leading-relaxed max-w-md opacity-90">

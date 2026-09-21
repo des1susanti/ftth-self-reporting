@@ -18,7 +18,7 @@
             
             <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
                 <div>
-                    <span class="font-bold text-blue-700">#FTTH-{{ str_pad($ticket->id, 3, '0', STR_PAD_LEFT) }}</span>
+                    <span class="font-bold text-blue-700">Fiber To The Home-{{ str_pad($ticket->id, 3, '0', STR_PAD_LEFT) }}</span>
                     <span class="text-gray-400 mx-2">•</span>
                     <span class="text-gray-600 text-sm">{{ $ticket->customer->name ?? 'N/A' }}</span>
                     <span class="text-gray-400 mx-2">•</span>

@@ -1,19 +1,19 @@
 @extends('layouts.admin')
-
+ 
 @section('title', 'Dashboard')
 @section('page-title', 'Ringkasan Strategis')
 @section('page-subtitle', 'Monitoring Gangguan Real-Time')
-
+ 
 @section('content')
 <div class="space-y-6">
-
+ 
     <div id="notif-panel" class="hidden bg-white rounded-2xl shadow-lg border border-red-100 p-5">
         <p class="font-bold text-gray-800 text-sm mb-3 uppercase tracking-wider">🔔 Gangguan Menunggu Tindakan</p>
         @forelse($notifications as $notif)
         <div class="flex items-center gap-3 py-2 border-b border-gray-50 last:border-0">
             <div class="w-2 h-2 rounded-full bg-red-500 flex-shrink-0"></div>
             <div class="flex-1">
-                <p class="text-sm font-medium text-gray-800">#FTTH-{{ str_pad($notif->id,3,'0',STR_PAD_LEFT) }} — {{ $notif->customer->name }}</p>
+                <p class="text-sm font-medium text-gray-800">Fiber To The Home-{{ str_pad($ticket->id, 3, '0', STR_PAD_LEFT) }}</p>
                 <p class="text-xs text-gray-400">{{ Str::limit($notif->description, 40) }} · {{ $notif->created_at->diffForHumans() }}</p>
             </div>
             <span class="px-2 py-1 rounded-full text-xs font-bold bg-red-100 text-red-600">Menunggu</span>
@@ -22,7 +22,7 @@
         <p class="text-gray-400 text-sm text-center py-2">✅ Tidak ada gangguan menunggu.</p>
         @endforelse
     </div>
-
+ 
     <div class="grid grid-cols-4 gap-5">
         <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 relative overflow-hidden">
             <div class="absolute top-0 right-0 w-20 h-20 bg-red-50 rounded-bl-full"></div>
@@ -49,9 +49,119 @@
             <p class="text-xs text-blue-500 font-semibold mt-3">● Aktif Bertugas</p>
         </div>
     </div>
-
+ 
+    {{-- ================================================================== --}}
+    {{-- ✅ REVISI BARU: RINGKASAN HARI INI (khusus pantauan Manager/Admin)  --}}
+    {{-- ================================================================== --}}
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
+            <div>
+                <p class="font-bold text-gray-800 text-sm uppercase tracking-wider">Ringkasan Hari Ini</p>
+                <p class="text-xs text-gray-400">{{ \Carbon\Carbon::today()->translatedFormat('l, d F Y') }}</p>
+            </div>
+            <a href="{{ route('histori.index', ['periode' => 'hari']) }}"
+               class="bg-blue-800 hover:bg-blue-900 text-white px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider">
+                Lihat Histori & Timeline →
+            </a>
+        </div>
+ 
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 p-6">
+            <div class="rounded-2xl border border-gray-100 p-5">
+                <p class="text-xs text-gray-400 uppercase tracking-wider mb-2">Laporan Masuk Hari Ini</p>
+                <p class="text-4xl font-black text-gray-800">{{ str_pad($masukHariIni, 2, '0', STR_PAD_LEFT) }}</p>
+            </div>
+            <div class="rounded-2xl border border-green-100 bg-green-50 p-5">
+                <p class="text-xs text-green-700 uppercase tracking-wider mb-2">Selesai Dikerjakan Hari Ini</p>
+                <p class="text-4xl font-black text-green-600">{{ str_pad($selesaiHariIni, 2, '0', STR_PAD_LEFT) }}</p>
+            </div>
+            <div class="rounded-2xl border border-yellow-100 bg-yellow-50 p-5">
+                <p class="text-xs text-yellow-700 uppercase tracking-wider mb-2">Belum Selesai Dikerjakan</p>
+                <p class="text-4xl font-black text-yellow-600">{{ str_pad($belumSelesaiHariIni, 2, '0', STR_PAD_LEFT) }}</p>
+            </div>
+        </div>
+ 
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 px-6 pb-6">
+ 
+            {{-- Penyebab gangguan hari ini --}}
+            <div class="rounded-2xl border border-gray-100 overflow-hidden">
+                <div class="px-5 py-3 bg-gray-50 border-b border-gray-100">
+                    <p class="text-xs font-bold text-gray-600 uppercase tracking-wider">Penyebab Gangguan Hari Ini</p>
+                </div>
+                <div class="p-4 space-y-3">
+                    @forelse($penyebabHariIni as $nama => $jumlah)
+                    <div class="flex items-center gap-3">
+                        <div class="flex-1">
+                            <p class="text-sm text-gray-800">{{ $nama }}</p>
+                            <div class="w-full bg-gray-100 rounded-full h-2 mt-1">
+                                <div class="bg-blue-700 h-2 rounded-full"
+                                     style="width: {{ $selesaiHariIni > 0 ? round($jumlah / $selesaiHariIni * 100) : 0 }}%"></div>
+                            </div>
+                        </div>
+                        <span class="px-3 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-700">{{ $jumlah }}</span>
+                    </div>
+                    @empty
+                    <p class="text-gray-400 text-xs text-center py-3">Belum ada penyebab gangguan tercatat hari ini.</p>
+                    @endforelse
+                </div>
+            </div>
+ 
+            {{-- Laporan penyelesaian gangguan hari ini --}}
+            <div class="rounded-2xl border border-gray-100 overflow-hidden">
+                <div class="px-5 py-3 bg-gray-50 border-b border-gray-100">
+                    <p class="text-xs font-bold text-gray-600 uppercase tracking-wider">Laporan Penyelesaian Hari Ini</p>
+                </div>
+                <div class="p-4 space-y-3 max-h-72 overflow-y-auto">
+                    @forelse($laporanSelesaiHariIni as $lap)
+                    <div class="border-b border-gray-50 last:border-0 pb-3 last:pb-0">
+                        <p class="text-xs font-bold text-blue-700">
+                            Fiber To The Home-{{ str_pad($ticket->id, 3, '0', STR_PAD_LEFT) }}
+                        </p>
+                        <p class="text-xs text-gray-600"><strong>Penyebab:</strong> {{ $lap->penyebab ?? '-' }}</p>
+                        <p class="text-xs text-gray-600"><strong>Tindakan:</strong> {{ $lap->action_taken ?? '-' }}</p>
+                        <p class="text-xs text-gray-400">
+                            Teknisi: {{ $lap->technician->name ?? '-' }} · Selesai {{ $lap->updated_at->format('H:i') }} WIB
+                        </p>
+                    </div>
+                    @empty
+                    <p class="text-gray-400 text-xs text-center py-3">Belum ada gangguan yang selesai hari ini.</p>
+                    @endforelse
+                </div>
+            </div>
+        </div>
+ 
+        {{-- Timeline aktivitas hari ini --}}
+        <div class="px-6 pb-6">
+            <div class="rounded-2xl border border-gray-100 overflow-hidden">
+                <div class="px-5 py-3 bg-gray-50 border-b border-gray-100">
+                    <p class="text-xs font-bold text-gray-600 uppercase tracking-wider">Timeline Aktivitas Hari Ini</p>
+                </div>
+                <div class="p-5">
+                    <div class="relative border-l-2 border-gray-100 ml-3 space-y-5">
+                        @forelse($timelineHariIni as $item)
+                        <div class="relative pl-6">
+                            <span class="absolute -left-[7px] top-1.5 w-3 h-3 rounded-full
+                                {{ in_array($item->status, ['selesai','resolved','normal']) ? 'bg-green-500' : 'bg-yellow-400' }}"></span>
+                            <p class="text-xs text-gray-400">{{ $item->created_at->format('H:i') }} WIB</p>
+                            <p class="text-sm font-semibold text-gray-800">
+                                Fiber To The Home-{{ str_pad($ticket->id, 3, '0', STR_PAD_LEFT) }}
+                                {{ $item->ticket->customer->name ?? '-' }} —
+                                <span class="text-blue-700">{{ $item->status_label }}</span>
+                            </p>
+                            <p class="text-xs text-gray-500">{{ $item->notes }}</p>
+                            <p class="text-xs text-gray-400 italic">Oleh: {{ $item->user->name ?? 'Sistem' }}</p>
+                        </div>
+                        @empty
+                        <p class="text-gray-400 text-xs py-2 pl-6">Belum ada aktivitas teknisi hari ini.</p>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{-- ================= AKHIR REVISI RINGKASAN HARI INI ================= --}}
+ 
     <div class="grid grid-cols-3 gap-6">
-
+ 
         <div class="col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
             <div class="px-6 py-5 flex justify-between items-center border-b border-gray-100">
                 <p class="font-bold text-gray-800 uppercase tracking-wider text-sm">Log Gangguan Terkini</p>
@@ -71,7 +181,7 @@
                     @forelse($tickets as $ticket)
                     <tr class="hover:bg-gray-50 transition">
                         <td class="px-5 py-4 font-bold text-blue-700 text-xs">
-                            #FTTH-{{ str_pad($ticket->id, 3, '0', STR_PAD_LEFT) }}
+                           Fiber To The Home-{{ str_pad($ticket->id, 3, '0', STR_PAD_LEFT) }}
                         </td>
                         <td class="px-5 py-4">
                             <p class="font-medium text-gray-800 text-xs">{{ $ticket->customer->name }}</p>
@@ -114,9 +224,9 @@
                 </tbody>
             </table>
         </div>
-
+ 
         <div class="space-y-5">
-
+ 
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                 <div class="px-5 py-4 border-b border-gray-100">
                     <p class="font-bold text-gray-800 text-sm uppercase tracking-wider">Daftar Teknisi</p>
@@ -140,7 +250,7 @@
                     @endif
                 </div>
             </div>
-
+ 
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                 <div class="px-5 py-4 border-b border-gray-100">
                     <p class="font-bold text-gray-800 text-sm uppercase tracking-wider">Aktivitas Terbaru</p>
@@ -153,7 +263,7 @@
 </div>
                         <div>
                             <p class="text-xs font-medium text-gray-700">
-                                #FTTH-{{ str_pad($ticket->id, 3, '0', STR_PAD_LEFT) }} · {{ $ticket->customer->name }}
+                                Fiber To The Home-{{ str_pad($ticket->id, 3, '0', STR_PAD_LEFT) }}
                             </p>
                             <p class="text-xs text-gray-400">{{ $ticket->created_at->diffForHumans() }}</p>
                         </div>
@@ -164,7 +274,7 @@
                     @endif
                 </div>
             </div>
-
+ 
             <div class="bg-blue-800 rounded-2xl p-5 text-white">
                 <p class="font-bold text-sm mb-3 uppercase tracking-wider">Aksi Cepat</p>
                 <div class="space-y-2">
@@ -185,7 +295,7 @@
         </div>
     </div>
 </div>
-
+ 
 {{-- ✅ TAMBAHAN: Script untuk tombol lonceng & Interaksi Tombol Tugaskan --}}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -198,7 +308,7 @@ document.addEventListener('DOMContentLoaded', function() {
             panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         });
     }
-
+ 
     // 2. Logika Tombol Tugaskan (Grey ke Biru)
     const selects = document.querySelectorAll('.technician-select');
     selects.forEach(select => {

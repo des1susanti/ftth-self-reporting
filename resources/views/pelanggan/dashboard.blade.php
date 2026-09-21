@@ -1,40 +1,40 @@
 @extends('layouts.app')
-
+ 
 @section('content')
-
+ 
 <div x-data="{ open:false }" class="min-h-screen bg-[#F4F7FB] flex overflow-x-hidden relative">
-
+ 
     {{-- SIDEBAR DESKTOP --}}
     <aside class="hidden lg:flex flex-col fixed left-0 top-0 h-screen w-72 bg-[#005494] text-white shadow-2xl z-50">
-
+ 
         {{-- LOGO --}}
         <div class="px-8 py-7 border-b border-white/10">
             <img src="{{ asset('images/icon.png') }}"
                  alt="ICONNET"
                  class="h-14 w-auto brightness-0 invert">
         </div>
-
+ 
         {{-- USER --}}
         <div class="px-8 py-8">
             <p class="text-sm text-white/60">
                 Selamat Datang
             </p>
-
+ 
             <h1 class="text-xl font-semibold mt-2 leading-snug">
                 {{ auth()->user()->name }}
             </h1>
-
+ 
             <div class="mt-6">
                 <div class="inline-flex items-center bg-[#00C16A] px-4 py-2 rounded-xl text-xs font-semibold shadow">
                     ID : 1209883742
                 </div>
-
+ 
                 <p class="text-sm text-white/60 mt-4">
                     Regional Jambi
                 </p>
             </div>
         </div>
-
+ 
         {{-- MENU --}}
         <nav class="px-5 space-y-3">
             {{-- DASHBOARD (AKTIF - Putih) --}}
@@ -51,7 +51,17 @@
                 </svg>
                 Dashboard
             </a>
-
+ 
+            {{-- ✅ REVISI BARU: HISTORI HARIAN & TIMELINE --}}
+            <a href="{{ route('histori.index', ['periode' => 'hari']) }}"
+               class="flex items-center gap-3 px-5 py-3 rounded-2xl hover:bg-white/10 transition duration-200 text-white">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                Histori Harian
+            </a>
+ 
             {{-- PROFIL (NON-AKTIF) --}}
             <a href="{{ route('pelanggan.profil') }}"
                class="flex items-center gap-3 px-5 py-3 rounded-2xl hover:bg-white/10 transition duration-200 text-white">
@@ -69,7 +79,7 @@
             
             {{-- Logout dipindahkan ke kanan bawah --}}
         </nav>
-
+ 
         {{-- FOOTER --}}
         <div class="mt-auto px-8 py-6 border-t border-white/10">
             <p class="text-[11px] tracking-[0.25em] uppercase text-white/40">
@@ -77,11 +87,11 @@
             </p>
         </div>
     </aside>
-
-
+ 
+ 
     {{-- MAIN --}}
     <main class="flex-1 lg:ml-72 w-full pb-24">
-
+ 
         {{-- MOBILE NAVBAR --}}
         <div class="lg:hidden bg-[#005494] shadow-lg sticky top-0 z-50">
             <div class="px-5 py-4 flex items-center justify-between">
@@ -99,7 +109,7 @@
                     </svg>
                 </button>
             </div>
-
+ 
             {{-- MOBILE MENU --}}
             <div x-show="open"
                  x-transition
@@ -109,6 +119,11 @@
                        class="block bg-white text-[#005494] px-4 py-3 rounded-xl font-semibold">
                         Dashboard
                     </a>
+                    {{-- ✅ REVISI BARU: Histori Harian (menu mobile) --}}
+                    <a href="{{ route('histori.index', ['periode' => 'hari']) }}"
+                       class="block text-white px-4 py-3 rounded-xl hover:bg-white/10 transition">
+                        Histori Harian
+                    </a>
                     <a href="{{ route('pelanggan.profil') }}"
                        class="block text-white px-4 py-3 rounded-xl hover:bg-white/10 transition">
                         Profil Pengguna
@@ -116,11 +131,11 @@
                 </div>
             </div>
         </div>
-
-
+ 
+ 
         {{-- CONTENT --}}
         <div class="p-5 lg:p-10">
-
+ 
             {{-- HERO --}}
             <div class="bg-gradient-to-r from-[#005494] to-[#006BC2] rounded-[2rem] p-7 lg:p-9 text-white shadow-lg">
                 <p class="text-sm text-white/70">
@@ -138,8 +153,8 @@
                     </div>
                 </div>
             </div>
-
-
+ 
+ 
             {{-- STATUS --}}
             <div class="bg-white rounded-[2rem] p-5 shadow-sm border border-gray-100 mt-6 flex items-center justify-between">
                 <div class="flex items-center gap-4">
@@ -169,8 +184,8 @@
                 </div>
                 <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
             </div>
-
-
+ 
+ 
             {{-- BUTTON --}}
             <a href="{{ route('pelanggan.laporan.create') }}"
                class="group block mt-6 bg-white border-2 border-dashed border-cyan-200 rounded-[2rem] p-8 lg:p-10 text-center hover:bg-cyan-50 transition-all duration-300 hover:shadow-lg">
@@ -192,7 +207,7 @@
                     Klik di sini jika internet mengalami kendala
                 </p>
             </a>
-
+ 
 {{-- RIWAYAT --}}
 <div class="mt-10">
     <div class="flex items-center justify-between mb-5">
@@ -200,7 +215,7 @@
             Riwayat Laporan
         </h3>
     </div>
-
+ 
     <div class="space-y-4">
         @forelse($tickets as $ticket)
         <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 hover:shadow-md transition">
@@ -223,7 +238,7 @@
                 <span class="px-4 py-2 rounded-xl text-[10px] font-bold uppercase text-white {{ $ticket->status_color }}">
                     {{ $ticket->status_label }}
                 </span>
-
+ 
                 {{-- TOMBOL LACAK (REVISI DISINI) --}}
                 <a href="{{ route('pelanggan.laporan.track', $ticket->id) }}" 
                    class="bg-[#005494] hover:bg-[#006BC2] text-white px-5 py-2 rounded-xl text-xs font-semibold shadow-sm transition">
@@ -242,7 +257,7 @@
 </div>
         </div>
     </main>
-
+ 
     {{-- TOMBOL KELUAR DI POJOK KANAN BAWAH (FIXED) --}}
     <div class="fixed bottom-8 right-8 z-[60]">
         <form method="POST" action="{{ route('logout') }}">
@@ -256,5 +271,5 @@
         </form>
     </div>
 </div>
-
+ 
 @endsection

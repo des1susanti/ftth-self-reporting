@@ -1,14 +1,14 @@
 <?php
-
+ 
 namespace App\Models;
-
+ 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+ 
 class TicketUpdate extends Model
 {
     use HasFactory;
-
+ 
     protected $fillable = [
         'ticket_id',
         'user_id',
@@ -16,17 +16,17 @@ class TicketUpdate extends Model
         'notes',
         'photo_path',
     ];
-
+ 
     public function ticket()
     {
         return $this->belongsTo(Ticket::class);
     }
-
+ 
     public function user()
     {
         return $this->belongsTo(User::class);
     }
-
+ 
 public function getStatusLabelAttribute()
 {
     return match($this->status) {
@@ -38,4 +38,30 @@ public function getStatusLabelAttribute()
         default                    => ucfirst($this->status),
     };
 }
-}
+ 
+    /*
+    |--------------------------------------------------------------------------
+    | ✅ REVISI BARU: FILTER WAKTU UNTUK TIMELINE AKTIVITAS
+    |--------------------------------------------------------------------------
+    */
+    public function scopePeriode($query, ?string $periode, ?string $start = null, ?string $end = null, string $column = 'created_at')
+    {
+        if ($start && $end) {
+            return $query->whereBetween($column, [
+                \Carbon\Carbon::parse($start)->startOfDay(),
+                \Carbon\Carbon::parse($end)->endOfDay(),
+            ]);
+        }
+ 
+        if ($start && ! $end) {
+            return $query->whereDate($column, \Carbon\Carbon::parse($start));
+        }
+ 
+        return match ($periode) {
+            'hari'   => $query->whereDate($column, \Carbon\Carbon::today()),
+            'minggu' => $query->whereBetween($column, [\Carbon\Carbon::now()->startOfWeek(), \Carbon\Carbon::now()->endOfWeek()]),
+            'bulan'  => $query->whereBetween($column, [\Carbon\Carbon::now()->startOfMonth(), \Carbon\Carbon::now()->endOfMonth()]),
+            'tahun'  => $query->whereBetween($column, [\Carbon\Carbon::now()->startOfYear(), \Carbon\Carbon::now()->endOfYear()]),
+            default  => $query,
+        };
+    }}

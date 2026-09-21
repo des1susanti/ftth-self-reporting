@@ -7,6 +7,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\TeknisiController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\HistoriController;
 /*
 |--------------------------------------------------------------------------
 | HALAMAN AWAL
@@ -106,72 +107,89 @@ Route::middleware(['auth'])->group(function () {
     })->name('profil.edit.admin');
 
 
-    // --- 3. PROSES UPDATE & PASSWORD (Tetap dipertahankan) ---
+     // --- 3. PROSES UPDATE & PASSWORD (Tetap dipertahankan) ---
     Route::post('/profil/update', [App\Http\Controllers\ProfileController::class, 'update'])->name('pelanggan.profil.update');
     Route::get('/ubah-password', [App\Http\Controllers\ProfileController::class, 'editPassword'])->name('password.edit');
-    Route::put('/ubah-password', [App\Http\Controllers\ProfileController::class, 'updatePassword'])->name('password.update');
-
+Route::put('/ubah-password', [App\Http\Controllers\ProfileController::class, 'updatePassword'])->name('profile.password.update');
 });
 /*
 |--------------------------------------------------------------------------
 | ADMIN & MANAGER
 |--------------------------------------------------------------------------
 */
-
+ 
 // Menggunakan middleware 'role' yang baru kita daftarkan di bootstrap/app.php
 Route::middleware(['auth', 'role:admin,manager'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
-
+ 
         Route::get('/dashboard', [AdminController::class, 'dashboard'])
             ->name('dashboard');
-
+ 
         Route::post('/tickets/{ticket}/assign', [AdminController::class, 'assign'])
             ->name('tickets.assign');
-
+ 
         Route::get('/users', [AdminController::class, 'users'])
             ->name('users');
-
+ 
         Route::get('/users/create', [AdminController::class, 'createUser'])
             ->name('users.create');
-
+ 
         Route::post('/users/store', [AdminController::class, 'storeUser'])
             ->name('users.store');
-
+ 
         Route::get('/laporan', [AdminController::class, 'laporan'])
             ->name('laporan');
-
+ 
         Route::get('/export-excel', [App\Http\Controllers\ExportController::class, 'exportExcel'])
             ->name('export.excel');
-
+ 
         Route::get('/export-pdf', [App\Http\Controllers\ExportController::class, 'exportPdf'])
             ->name('export.pdf');
-
+ 
         Route::delete('/users/{user}', [AdminController::class, 'deleteUser'])
             ->name('users.delete');
     });
-
-
+ 
+ 
 /*
 |--------------------------------------------------------------------------
 | TEKNISI
 |--------------------------------------------------------------------------
 */
-
+ 
 Route::middleware(['auth'])
     ->prefix('teknisi')
     ->name('teknisi.')
     ->group(function () {
-
+ 
         Route::get('/dashboard', [TeknisiController::class, 'dashboard'])
             ->name('dashboard');
-
+ 
         // REVISI: Ubah 'tickets.update' menjadi 'update' agar sesuai dengan route('teknisi.update') di Blade
         // Dan ubah POST menjadi PATCH agar sesuai dengan @method('PATCH') di form Blade Anda
         Route::patch('/update/{ticket}', [TeknisiController::class, 'update'])
             ->name('update'); 
-
+ 
         Route::get('/laporan', [TeknisiController::class, 'laporan'])
             ->name('laporan');
     });
+ 
+ 
+/*
+|--------------------------------------------------------------------------
+| ✅ REVISI BARU: HISTORI HARIAN & TIMELINE (SEMUA ROLE)
+|--------------------------------------------------------------------------
+| Bisa diakses pelanggan, teknisi, admin, dan manager.
+| Data otomatis difilter sesuai role di dalam HistoriController.
+| Contoh URL:
+|   /histori                         -> default hari ini
+|   /histori?periode=minggu          -> minggu ini
+|   /histori?periode=bulan           -> bulan ini
+|   /histori?periode=tahun           -> tahun ini
+|   /histori?start_date=2026-09-01&end_date=2026-09-21  -> rentang tanggal
+*/
+Route::middleware(['auth'])->group(function () {
+    Route::get('/histori', [HistoriController::class, 'index'])->name('histori.index');
+});

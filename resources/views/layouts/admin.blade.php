@@ -7,7 +7,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="min-h-screen flex bg-gray-50 overflow-x-hidden">
-
+ 
     <!-- Sidebar -->
     <div class="w-60 min-h-screen bg-blue-900 flex flex-col fixed left-0 top-0 z-20">
         
@@ -17,7 +17,7 @@
          alt="Logo Iconnet" 
          class="w-full h-auto max-w-[150px] object-contain filter brightness-0 invert">
 </div>
-
+ 
         <!-- Menu -->
         <nav class="flex-1 p-4 space-y-1">
             <p class="text-blue-500 text-xs uppercase tracking-widest px-3 mb-3 mt-2">Menu Utama</p>
@@ -29,7 +29,7 @@
                 <span class="text-lg">📊</span>
                 <span>Dashboard</span>
             </a>
-
+ 
             <a href="{{ auth()->user()->role == 'teknisi' ? route('teknisi.laporan') : route('admin.laporan') }}"
                class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition
                {{ request()->routeIs('admin.laporan') || request()->routeIs('teknisi.laporan')
@@ -37,7 +37,16 @@
                 <span class="text-lg">📋</span>
                 <span>Data Gangguan</span>
             </a>
-
+ 
+            {{-- ✅ REVISI BARU: Menu Histori Harian & Timeline (semua role) --}}
+            <a href="{{ route('histori.index', ['periode' => 'hari']) }}"
+               class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition
+               {{ request()->routeIs('histori.*')
+                  ? 'bg-blue-700 text-white shadow-lg' : 'text-blue-200 hover:bg-blue-800 hover:text-white' }}">
+                <span class="text-lg">🕒</span>
+                <span>Histori Harian</span>
+            </a>
+ 
             @if(auth()->user()->role != 'teknisi')
             <a href="{{ route('admin.users') }}"
                class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition
@@ -47,9 +56,9 @@
                 <span>Manajemen User</span>
             </a>
             @endif
-
+ 
             <p class="text-blue-500 text-xs uppercase tracking-widest px-3 mb-3 mt-6">Akun</p>
-
+ 
             <a href="{{ route('pelanggan.profil') }}"
                class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition
                {{ request()->routeIs('pelanggan.profil') 
@@ -58,7 +67,7 @@
                 <span>Profil Saya</span>
             </a>
         </nav>
-
+ 
         <!-- User Info & Logout -->
         <div class="p-4 border-t border-blue-800">
             <div class="flex items-center gap-3 mb-3">
@@ -81,10 +90,10 @@
             <p class="text-blue-600 text-xs text-center mt-3 uppercase tracking-wider">Regional Jambi</p>
         </div>
     </div>
-
+ 
     <!-- Main Content -->
     <div class="ml-60 flex-1 flex flex-col min-h-screen">
-
+ 
         <!-- Top Bar -->
         <header class="bg-white border-b border-gray-100 px-8 py-4 flex justify-between items-center sticky top-0 z-10 shadow-sm">
             <div>
@@ -118,7 +127,7 @@
                 </div>
             </div>
         </header>
-
+ 
         <!-- Flash Message -->
         @if(session('success'))
         <div class="mx-8 mt-4 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl text-sm flex items-center gap-2">
@@ -130,28 +139,28 @@
             <span>❌</span> {{ session('error') }}
         </div>
         @endif
-
+ 
         <!-- Page Content -->
         <main class="flex-1 p-8">
             @yield('content')
         </main>
-
+ 
         <!-- Footer -->
         <footer class="px-8 py-4 border-t border-gray-100 text-xs text-gray-400 text-center">
-            © {{ date('Y') }} PLN Icon Plus — FTTH Self Reporting System · Regional Jambi
+            © {{ date('Y') }} PLN Icon Plus — Fiber To The Home Self Reporting System · Regional Jambi
         </footer>
     </div>
 <script>
         document.addEventListener('DOMContentLoaded', function () {
             // Mencari semua dropdown teknisi di dalam halaman
             const selectInputs = document.querySelectorAll('.teknisi-select');
-
+ 
             selectInputs.forEach(select => {
                 select.addEventListener('change', function () {
                     // Mencari baris (container) tempat dropdown berada
                     const parent = this.closest('div');
                     const button = parent.querySelector('.btn-tugaskan');
-
+ 
                     if (this.value !== "") {
                         // Jika teknisi dipilih: Aktifkan tombol & ubah jadi Biru
                         button.disabled = false;
@@ -169,6 +178,6 @@
     </script>
 </body>
 </html>
-
+ 
 </body>
 </html>

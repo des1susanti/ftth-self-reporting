@@ -1,22 +1,35 @@
 @extends('layouts.admin')
-
+ 
 @section('title', 'Data Gangguan')
 @section('page-title', 'Data Laporan Gangguan')
 @section('page-subtitle', 'Audit Operasional & Rekapitulasi')
-
+ 
 @section('content')
 <div class="space-y-6">
-
+ 
     <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
         <form method="GET" action="{{ route('admin.laporan') }}" class="flex gap-3 items-center">
             <select name="periode" onchange="this.form.submit()"
                     class="border border-gray-200 rounded-xl px-4 py-2 text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
                 <option value="">Semua Waktu</option>
+                {{-- ✅ REVISI BARU: opsi Hari Ini --}}
+                <option value="hari" {{ request('periode') == 'hari' ? 'selected' : '' }}>Hari Ini</option>
                 <option value="minggu" {{ request('periode') == 'minggu' ? 'selected' : '' }}>Minggu Ini</option>
                 <option value="bulan" {{ request('periode') == 'bulan' ? 'selected' : '' }}>Bulan Ini</option>
                 <option value="tahun" {{ request('periode') == 'tahun' ? 'selected' : '' }}>Tahun Ini</option>
             </select>
-
+ 
+            {{-- ✅ REVISI BARU: rentang tanggal manual (date range) --}}
+            <input type="date" name="start_date" value="{{ request('start_date') }}"
+                   class="border border-gray-200 rounded-xl px-4 py-2 text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <span class="text-gray-400 text-sm">s/d</span>
+            <input type="date" name="end_date" value="{{ request('end_date') }}"
+                   class="border border-gray-200 rounded-xl px-4 py-2 text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <button type="submit"
+                    class="bg-blue-800 hover:bg-blue-900 text-white px-4 py-2 rounded-xl text-sm font-bold uppercase tracking-wider">
+                Filter
+            </button>
+ 
             {{-- ✅ REVISI: Opsi status disesuaikan dengan ENUM di Database (DBeaver) agar filter akurat --}}
             <select name="status" onchange="this.form.submit()"
                     class="border border-gray-200 rounded-xl px-4 py-2 text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
@@ -27,22 +40,22 @@
                 <option value="perbaikan"  {{ request('status') == 'perbaikan'  ? 'selected' : '' }}>🔧 Perbaikan</option>
                 <option value="selesai"    {{ request('status') == 'selesai'    ? 'selected' : '' }}>✅ Selesai</option>
             </select>
-
+ 
             <div class="ml-auto flex gap-2">
                 <a href="{{ route('admin.export.excel') }}" 
                    class="bg-teal-500 hover:bg-teal-600 text-white px-5 py-2 rounded-xl text-sm font-bold uppercase tracking-wider flex items-center gap-2">
                     <span>📊</span> Excel
                 </a>
-
+ 
                 <a href="{{ route('admin.export.pdf') }}" 
                    class="bg-red-500 hover:bg-red-700 text-white px-5 py-2 rounded-xl text-sm font-bold uppercase tracking-wider flex items-center gap-2">
                     <span>📄</span> PDF
                 </a>
             </div>
-
+ 
         </form>
     </div>
-
+ 
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
         <table class="w-full text-sm">
             <thead>
@@ -60,7 +73,7 @@
                 @forelse($tickets as $ticket)
                 <tr class="hover:bg-gray-50 transition">
                     <td class="px-6 py-4 font-bold text-blue-700">
-                        #FTTH-{{ str_pad($ticket->id, 3, '0', STR_PAD_LEFT) }}
+                        Fiber To The Home-{{ str_pad($ticket->id, 3, '0', STR_PAD_LEFT) }}
                     </td>
                     <td class="px-6 py-4 font-semibold text-gray-800">{{ $ticket->customer->name ?? 'N/A' }}</td>
                     <td class="px-6 py-4 text-gray-600">{{ Str::limit($ticket->description, 35) }}</td>

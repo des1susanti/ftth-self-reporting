@@ -116,7 +116,7 @@
 
             {{-- FORM --}}
            <form method="POST"
-      action="{{ route('password.update') }}">
+     action="{{ route('profile.password.update') }}">
   @csrf
     @method('PUT')
     
