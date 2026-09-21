@@ -13,7 +13,7 @@
         <div class="flex items-center gap-3 py-2 border-b border-gray-50 last:border-0">
             <div class="w-2 h-2 rounded-full bg-red-500 flex-shrink-0"></div>
             <div class="flex-1">
-                <p class="text-sm font-medium text-gray-800">Fiber To The Home-{{ str_pad($ticket->id, 3, '0', STR_PAD_LEFT) }}</p>
+                <p class="text-sm font-medium text-gray-800">Fiber To The Home-{{ str_pad($notif->id, 3, '0', STR_PAD_LEFT) }}</p>
                 <p class="text-xs text-gray-400">{{ Str::limit($notif->description, 40) }} · {{ $notif->created_at->diffForHumans() }}</p>
             </div>
             <span class="px-2 py-1 rounded-full text-xs font-bold bg-red-100 text-red-600">Menunggu</span>
@@ -114,7 +114,7 @@
                     @forelse($laporanSelesaiHariIni as $lap)
                     <div class="border-b border-gray-50 last:border-0 pb-3 last:pb-0">
                         <p class="text-xs font-bold text-blue-700">
-                            Fiber To The Home-{{ str_pad($ticket->id, 3, '0', STR_PAD_LEFT) }}
+                            Fiber To The Home-{{ str_pad($lap->id, 3, '0', STR_PAD_LEFT) }}
                         </p>
                         <p class="text-xs text-gray-600"><strong>Penyebab:</strong> {{ $lap->penyebab ?? '-' }}</p>
                         <p class="text-xs text-gray-600"><strong>Tindakan:</strong> {{ $lap->action_taken ?? '-' }}</p>
@@ -143,7 +143,7 @@
                                 {{ in_array($item->status, ['selesai','resolved','normal']) ? 'bg-green-500' : 'bg-yellow-400' }}"></span>
                             <p class="text-xs text-gray-400">{{ $item->created_at->format('H:i') }} WIB</p>
                             <p class="text-sm font-semibold text-gray-800">
-                                Fiber To The Home-{{ str_pad($ticket->id, 3, '0', STR_PAD_LEFT) }}
+                                Fiber To The Home-{{ str_pad($item->ticket_id, 3, '0', STR_PAD_LEFT) }}
                                 {{ $item->ticket->customer->name ?? '-' }} —
                                 <span class="text-blue-700">{{ $item->status_label }}</span>
                             </p>
