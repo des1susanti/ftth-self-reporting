@@ -39,8 +39,8 @@
             @if($ticket->foto_kondisi)
             <div class="col-span-2">
                 <p class="text-gray-500 mb-2 font-bold">Foto Laporan Awal:</p>
-                <img src="{{ asset('storage/' . $ticket->foto_kondisi) }}" 
-                     class="rounded-lg max-h-48 w-full object-cover border shadow-sm">
+                <img src="{{ route('media.show', $ticket->foto_kondisi) }}" 
+     class="rounded-lg max-h-48 w-full object-cover border shadow-sm">
             </div>
             @endif
         </div>
@@ -92,8 +92,8 @@
                         @endif
 
                         @if($update->photo_path)
-                            <a href="{{ asset('storage/' . $update->photo_path) }}" target="_blank">
-                                <img src="{{ asset('storage/' . $update->photo_path) }}" 
+                            <a href="{{ route('media.show', $update->photo_path) }}" target="_blank">
+    <img src="{{ route('media.show', $update->photo_path) }}"
                                      class="rounded-xl max-h-40 object-cover mt-3 border shadow-sm hover:opacity-90 transition">
                             </a>
                         @endif

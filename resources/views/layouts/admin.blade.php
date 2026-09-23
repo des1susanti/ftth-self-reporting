@@ -101,18 +101,20 @@
                 <p class="text-xs text-gray-400 uppercase tracking-wider mt-0.5">@yield('page-subtitle')</p>
             </div>
             <div class="flex items-center gap-4">
-                <!-- Notifikasi -->
+               <!-- Notifikasi -->
+@unless(auth()->user()->role === 'teknisi')
                 <div class="relative">
-                    <button id="notif-btn" class="w-9 h-9 rounded-xl bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition">
-                        <span>🔔</span>
-                    </button>
+<button id="notif-btn" class="w-9 h-9 rounded-xl bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition">
+<span>🔔</span>
+</button>
                     @php $pending = \App\Models\Ticket::where('status','pending')->count(); @endphp
                     @if($pending > 0)
-                    <span class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold">
+<span class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold">
                         {{ $pending }}
-                    </span>
+</span>
                     @endif
-                </div>
+</div>
+@endunless
                 <!-- User -->
                 <div class="flex items-center gap-3 bg-gray-50 rounded-xl px-4 py-2">
                     <div class="text-right">

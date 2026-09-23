@@ -8,6 +8,7 @@ use App\Http\Controllers\TeknisiController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\HistoriController;
+use App\Http\Controllers\MediaController;
 /*
 |--------------------------------------------------------------------------
 | HALAMAN AWAL
@@ -193,3 +194,14 @@ Route::middleware(['auth'])
 Route::middleware(['auth'])->group(function () {
     Route::get('/histori', [HistoriController::class, 'index'])->name('histori.index');
 });
+/*
+|--------------------------------------------------------------------------
+| ✅ REVISI: MEDIA (Foto Tiket, Foto Profil, dsb)
+|--------------------------------------------------------------------------
+| Menggantikan asset('storage/...') yang bergantung pada symlink public/storage
+| (symlink rusak kalau proyek dibuka di komputer selain laptop developer).
+*/
+Route::middleware(['auth'])
+    ->get('/media/{path}', [MediaController::class, 'show'])
+    ->where('path', '.*')
+    ->name('media.show');

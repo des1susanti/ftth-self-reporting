@@ -48,7 +48,7 @@
                     @if($ticket->foto_kondisi)
                     <div>
                         <p class="text-xs text-gray-400 uppercase mb-2">Foto dari Pelanggan</p>
-                        <img src="{{ asset('storage/'.$ticket->foto_kondisi) }}" 
+                        <img src="{{ route('media.show', $ticket->foto_kondisi) }}" 
                              class="rounded-xl max-h-32 object-cover">
                     </div>
                     @endif
