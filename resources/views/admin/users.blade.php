@@ -21,14 +21,17 @@
                 <option value="teknisi"   {{ request('role') == 'teknisi'   ? 'selected' : '' }}>Teknisi</option>
                 <option value="admin"     {{ request('role') == 'admin'     ? 'selected' : '' }}>Admin</option>
                 <option value="manager"   {{ request('role') == 'manager'   ? 'selected' : '' }}>Manager</option>
-            </select>
+                    </select>
             <button type="submit" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2.5 rounded-xl text-sm font-medium">
                 Cari
             </button>
+
+            @if(auth()->user()->role === 'admin')
             <a href="{{ route('admin.users.create') }}"
                class="bg-blue-800 hover:bg-blue-900 text-white px-5 py-2.5 rounded-xl text-sm font-bold uppercase tracking-wider ml-auto whitespace-nowrap">
                 + Tambah User Baru
             </a>
+            @endif
         </form>
     </div>
 
@@ -66,26 +69,26 @@
         @else border-gray-200 text-gray-600 bg-gray-50 @endif">
         {{ ucfirst($user->role ?? '-') }}
     </span>
-</td>
 <td class="px-6 py-4">
-    <span class="text-green-500 font-bold text-xs uppercase">● Aktif</span>
-</td>
-<td class="px-6 py-4">
-    <div class="flex items-center gap-3">
-        <span class="text-gray-400 text-xs">Kelola</span>
-        @if(auth()->user()->id !== $user->id)
-        <form action="{{ route('admin.users.delete', $user->id) }}" 
-              method="POST"
-              onsubmit="return confirm('Yakin hapus user {{ $user->name }}?')">
-            @csrf
-            @method('DELETE')
-            <button type="submit" 
-                    class="text-red-500 hover:text-red-700 text-xs font-semibold hover:underline">
-                Hapus
-            </button>
-        </form>
-        @endif
-    </div>
+    @if(auth()->user()->role === 'admin')
+        <div class="flex items-center gap-3">
+            <span class="text-gray-400 text-xs">Kelola</span>
+            @if(auth()->id() !== $user->id)
+            <form action="{{ route('admin.users.delete', $user->id) }}"
+                  method="POST"
+                  onsubmit="return confirm('Yakin hapus user {{ $user->name }}?')">
+                @csrf
+                @method('DELETE')
+                <button type="submit"
+                        class="text-red-500 hover:text-red-700 text-xs font-semibold hover:underline">
+                    Hapus
+                </button>
+            </form>
+            @endif
+        </div>
+    @else
+        <span class="text-gray-300 text-xs">-</span>
+    @endif
 </td>
                 </tr>
                 @empty

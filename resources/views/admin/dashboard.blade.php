@@ -277,20 +277,24 @@
  
             <div class="bg-blue-800 rounded-2xl p-5 text-white">
                 <p class="font-bold text-sm mb-3 uppercase tracking-wider">Aksi Cepat</p>
-                <div class="space-y-2">
-                    <a href="{{ route('admin.users.create') }}" 
-                       class="flex items-center gap-2 bg-blue-700 hover:bg-blue-600 px-4 py-2.5 rounded-xl text-sm transition">
-                        <span>➕</span> Tambah User Baru
-                    </a>
-                    <a href="{{ route('admin.laporan') }}" 
-                       class="flex items-center gap-2 bg-blue-700 hover:bg-blue-600 px-4 py-2.5 rounded-xl text-sm transition">
-                        <span>📥</span> Export Laporan
-                    </a>
-                    <a href="{{ route('admin.users') }}" 
-                       class="flex items-center gap-2 bg-blue-700 hover:bg-blue-600 px-4 py-2.5 rounded-xl text-sm transition">
-                        <span>👥</span> Kelola User
-                    </a>
-                </div>
+             <div class="space-y-2">
+
+    @if(auth()->user()->role === 'admin')
+    <a href="{{ route('admin.users.create') }}" 
+       class="flex items-center gap-2 bg-blue-700 hover:bg-blue-600 px-4 py-2.5 rounded-xl text-sm transition">
+        <span>➕</span> Tambah User Baru
+    </a>
+    @endif
+
+    <a href="{{ route('admin.laporan') }}" 
+       class="flex items-center gap-2 bg-blue-700 hover:bg-blue-600 px-4 py-2.5 rounded-xl text-sm transition">
+        <span>📥</span> Export Laporan
+    </a>
+    <a href="{{ route('admin.users') }}" 
+       class="flex items-center gap-2 bg-blue-700 hover:bg-blue-600 px-4 py-2.5 rounded-xl text-sm transition">
+        <span>👥</span> Kelola User
+    </a>
+</div>
             </div>
         </div>
     </div>

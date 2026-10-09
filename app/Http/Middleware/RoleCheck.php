@@ -16,6 +16,6 @@ class RoleCheck
         }
 
         // Jika tidak sesuai, tampilkan error 403
-        abort(403, 'Akses Ditolak. Halaman ini khusus Admin atau Manager.');
+      abort(403, 'Akses Ditolak. Anda tidak memiliki izin untuk membuka halaman ini.');
     }
 }

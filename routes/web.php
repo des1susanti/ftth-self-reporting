@@ -115,40 +115,50 @@ Route::put('/ubah-password', [App\Http\Controllers\ProfileController::class, 'up
 });
 /*
 |--------------------------------------------------------------------------
-| ADMIN & MANAGER
+| ADMIN & MANAGER (melihat data, memantau, laporan)
 |--------------------------------------------------------------------------
 */
- 
-// Menggunakan middleware 'role' yang baru kita daftarkan di bootstrap/app.php
 Route::middleware(['auth', 'role:admin,manager'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
- 
+
         Route::get('/dashboard', [AdminController::class, 'dashboard'])
             ->name('dashboard');
- 
+
         Route::post('/tickets/{ticket}/assign', [AdminController::class, 'assign'])
             ->name('tickets.assign');
- 
+
+        // Manager hanya boleh MELIHAT daftar user
         Route::get('/users', [AdminController::class, 'users'])
             ->name('users');
- 
-        Route::get('/users/create', [AdminController::class, 'createUser'])
-            ->name('users.create');
- 
-        Route::post('/users/store', [AdminController::class, 'storeUser'])
-            ->name('users.store');
- 
+
         Route::get('/laporan', [AdminController::class, 'laporan'])
             ->name('laporan');
- 
+
         Route::get('/export-excel', [App\Http\Controllers\ExportController::class, 'exportExcel'])
             ->name('export.excel');
- 
+
         Route::get('/export-pdf', [App\Http\Controllers\ExportController::class, 'exportPdf'])
             ->name('export.pdf');
- 
+    });
+
+/*
+|--------------------------------------------------------------------------
+| ADMIN SAJA (tambah & hapus user)
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth', 'role:admin'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+
+        Route::get('/users/create', [AdminController::class, 'createUser'])
+            ->name('users.create');
+
+        Route::post('/users/store', [AdminController::class, 'storeUser'])
+            ->name('users.store');
+
         Route::delete('/users/{user}', [AdminController::class, 'deleteUser'])
             ->name('users.delete');
     });
